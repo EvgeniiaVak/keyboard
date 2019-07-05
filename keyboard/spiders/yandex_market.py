@@ -10,23 +10,21 @@ class YandexMarketSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        titles = response.css(".n-snippet-list .n-snippet-cell2__title .link::text").extract()
-        prices = response.css(".n-snippet-cell2__main-price-wrapper .price::text").extract()
-        ratings = response.css(".rating .rating__value::text").extract()
-        reviews_number = response.css(".n-snippet-card2__rating span::text").extract()
+        # find the list of items on this page
+        items = response.css(".n-snippet-list .n-snippet-cell2")
 
-        rows = zip(titles, prices, ratings, reviews_number)
-
-        for row in rows:
+        # yield each item
+        for item in items:
             yield {
-                'title': row[0],
-                'price': row[1],
-                'rating': row[2],
-                'reviewed': row[3]
+                'title': item.css(".n-snippet-cell2__title .link::text").get(),
+                'price': item.css(".n-snippet-cell2__main-price-wrapper .price::text").get(),
+                'rating': item.css(".rating .rating__value::text").get(),
+                'reviewed': item.css(".n-snippet-card2__rating span::text").get(),
+                'advantages': item.css(".n-reason-to-buy__best-item::text").getall()
             }
 
         # go to next page if one exists
-        next_page = response.css('.n-pager__button-next::attr(href)').extract_first()
+        next_page = response.css('.n-pager__button-next::attr(href)').get()
         if next_page:
             yield scrapy.Request(
                 response.urljoin(next_page),
