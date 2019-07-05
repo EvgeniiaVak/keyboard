@@ -4,7 +4,7 @@ import scrapy
 
 class YandexMarketSpider(scrapy.Spider):
     name = 'yandex_market'
-    allowed_domains = ['https://market.yandex.ru/']
+    allowed_domains = ['market.yandex.ru']
     start_urls = ['https://market.yandex.ru/catalog--klaviatury/68334/list/']
     custom_settings = {'FEED_FORMAT': 'csv', 'FEED_URI': 'yandex_market_%(time)s.csv'}
 
@@ -24,3 +24,10 @@ class YandexMarketSpider(scrapy.Spider):
                 'rating': row[2],
                 'reviewed': row[3]
             }
+
+        # go to next page if one exists
+        next_page = response.css('.n-pager__button-next::attr(href)').extract_first()
+        if next_page:
+            yield scrapy.Request(
+                response.urljoin(next_page),
+                callback=self.parse)
