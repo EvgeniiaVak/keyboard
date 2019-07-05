@@ -17,9 +17,11 @@ class YandexMarketSpider(scrapy.Spider):
         for item in items:
             yield {
                 'title': item.css(".n-snippet-cell2__title .link::text").get(),
-                'price': item.css(".n-snippet-cell2__main-price-wrapper .price::text").get(),
+                'price': item.css(".n-snippet-cell2__main-price-wrapper .price::text").re_first(r"[0-9]+.?[[0-9]+]?"),
                 'rating': item.css(".rating .rating__value::text").get(),
-                'reviewed': item.css(".n-snippet-card2__rating span::text").get(),
+
+                # number of reviews
+                'reviewed': item.css(".n-snippet-card2__rating span::text").re_first(r"[0-9]+"),
                 'advantages': item.css(".n-reason-to-buy__best-item::text").getall()
             }
 
