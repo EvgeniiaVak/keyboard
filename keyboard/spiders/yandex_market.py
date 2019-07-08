@@ -16,7 +16,7 @@ class YandexMarketSpider(scrapy.Spider):
         # yield each item
         for item in items:
             yield {
-                'title': item.css(".n-snippet-cell2__title .link::text").get(),
+                'title': item.css(".n-snippet-cell2__title .link::text").get().replace("Клавиатура", "").strip(),
                 'price': item.css(".n-snippet-cell2__main-price-wrapper .price::text").re_first(r"[0-9]+.?[[0-9]+]?"),
                 'rating': item.css(".rating .rating__value::text").get(),
 
