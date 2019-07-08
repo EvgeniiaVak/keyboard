@@ -6,7 +6,7 @@ class YandexMarketSpider(scrapy.Spider):
     name = 'yandex_market'
     allowed_domains = ['market.yandex.ru']
     start_urls = ['https://market.yandex.ru/catalog--klaviatury/68334/list/']
-    custom_settings = {'FEED_FORMAT': 'csv', 'FEED_URI': 'yandex_market_%(time)s.csv'}
+    custom_settings = {'FEED_FORMAT': 'csv', 'FEED_URI': 'data/yandex_market_%(time)s.csv'}
 
     def parse(self, response):
 
